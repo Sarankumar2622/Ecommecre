@@ -12,7 +12,8 @@ const Products = () => {
   const [data, setData] = useState([]);
   const [filter, setFilter] = useState(data);
   const [loading, setLoading] = useState(false);
-const [componentMounted, setComponentMounted] = useState(true);
+const componentMounted = useRef(true);
+
 
   const dispatch = useDispatch();
 
@@ -24,15 +25,15 @@ const [componentMounted, setComponentMounted] = useState(true);
     const getProducts = async () => {
       setLoading(true);
       const response = await fetch("https://fakestoreapi.com/products/");
-      if (componentMounted) {
+      if (componentMounted.current) {
         setData(await response.clone().json());
         setFilter(await response.json());
         setLoading(false);
       }
 
-      return () => {
-        setComponentMounted(false);
-      };
+       return () => {
+    componentMounted.current = false;
+  };
     };
 
     getProducts();
